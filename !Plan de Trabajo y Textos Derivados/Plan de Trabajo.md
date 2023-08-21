@@ -1,3 +1,12 @@
+
+## Aclaración
+
+
+En principio este es un archivo de texto creado con la intención de marcarle a Spectrum como equipo, el como deberá éste de trabajar para realizar exitosamente tan ambicioso proyecto.
+Este Readme claramente no será el qué perdurará hasta el final del proyecto, solo es un paso a paso de como ejecutaremos nuestro proyecto **público** para que sí a alguien le interesa nuestro proyecto, no solo sea capaz de recrearlo exitosamente si no que, también de imitar nuestra forma de trabajar.
+
+
+
 # Proyecto MiniBots.
 
 ---
