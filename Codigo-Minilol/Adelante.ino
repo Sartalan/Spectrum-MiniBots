@@ -1,42 +1,29 @@
-void Adelante_HTML (){
-  //#define MotorA2 16  //outputInt
-  //#define MotorA1 17  //outputInt
-  String Estado_Adelante = "off";
 
-  //--------------------------------------------------------------
-  //Creación HTML con href = on && off
+void Adelante_HTML(){
+   // Display current state, and ON/OFF buttons for GPIO 26  
+            client.println("<p>GPIO 26 - State " + forwardStatus + "</p>");
+            // If the forwardStatus is off, it displays the ON button       
+            if (forwardStatus=="off") {
+              client.println("<p><a href=\"/26/on\"><button class=\"button\">ON</button></a></p>");
+            } else {
+              client.println("<p><a href=\"/26/off\"><button class=\"button button2\">OFF</button></a></p>");
+            } 
 
-
-            client.println("<p>Estado Motor Hacia Delante" + Estado_Adelante + "</p>");
-
-            if (Adelante=="on") {
-              client.println("<p><a href=\"/16/on\"><button class=\"button\">ON</button></a></p>");
-            }
-
-             else {
-              client.println("<p><a href=\"/16/off\"><button class=\"button button2\">OFF</button></a></p>");
-            }
 }
 
-  //--------------------------------------------------------------
-  //Creación código C recibiendo el on || off
-
-            void Adelante_C(){
-
-              if (header.indexOf("GET /16/on") >= 0) {        //Sí recibe on == Prendido
-                      Serial.println("Adelante");
-                      Estado_Adelante = "on";
-                      digitalWrite(MotorA2, HIGH);
+void Adelante_C(){
+  
+            if (header.indexOf("GET /26/on") >= 0) {
+                      Serial.println("GPIO 26 on");
+                      forwardStatus = "on";
                       digitalWrite(MotorA1, HIGH);
-              } 
+                      digitalWrite(MotorA2, HIGH);
+                } 
 
-              else if (header.indexOf("GET /16/off") >= 0) {
-                      Serial.println("Parado");               //Sí recibe off == Apagado
-                      Estado_Adelante = "off";
-                      digitalWrite(MotorA2, LOW);
+                else if (header.indexOf("GET /26/off") >= 0) {
+                      Serial.println("GPIO 26 off");
+                      forwardStatus = "off";
                       digitalWrite(MotorA1, LOW);
+                      digitalWrite(MotorA2, LOW);
                 }
 }
-
-
- 
