@@ -1,7 +1,3 @@
-/*********
-  Rui Santos
-  Complete project details at http://randomnerdtutorials.com  
-*********/
 
 // Load Wi-Fi library
 #include <WiFi.h>
@@ -81,19 +77,7 @@ void loop(){
 //Default code for HTPP Request, don't delete
 //C Functions to Robot Moving      
 
-        if (header.indexOf("GET /26/on") >= 0) {
-                      Serial.println("Yendo hacia adelante");
-                      forwardStatus = "on";
-                      digitalWrite(MotorA1, HIGH);
-                      digitalWrite(MotorA2, HIGH);
-                } 
-
-                else if (header.indexOf("GET /26/off") >= 0) {
-                      Serial.println("Null");
-                      forwardStatus = "off";
-                      digitalWrite(MotorA1, LOW);
-                      digitalWrite(MotorA2, LOW);
-                }
+Adelante_C();
 
 //------------------------------------------
 //HTML Section
