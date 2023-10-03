@@ -7,10 +7,9 @@
 #include <WiFi.h>
 
 // Replace with your network credentials
-const char* ssid = "REPLACE_WITH_YOUR_SSID";
-const char* password = "REPLACE_WITH_YOUR_PASSWORD";
+const char* ssid = "Estudiantes";
+const char* password = "educar_2018";
 WiFiServer server(80);
-WiFiClient client = server.available();
 
 // Set web server port number to 80
 
@@ -59,6 +58,7 @@ void setup() {
 void loop(){
   WiFiClient client = server.available();   // Listen for incoming clients
 
+
   if (client) {                             // If a new client connects,
     currentTime = millis();
     previousTime = currentTime;
@@ -81,7 +81,19 @@ void loop(){
 //Default code for HTPP Request, don't delete
 //C Functions to Robot Moving      
 
-        Adelante_C();
+        if (header.indexOf("GET /26/on") >= 0) {
+                      Serial.println("Yendo hacia adelante");
+                      forwardStatus = "on";
+                      digitalWrite(MotorA1, HIGH);
+                      digitalWrite(MotorA2, HIGH);
+                } 
+
+                else if (header.indexOf("GET /26/off") >= 0) {
+                      Serial.println("Null");
+                      forwardStatus = "off";
+                      digitalWrite(MotorA1, LOW);
+                      digitalWrite(MotorA2, LOW);
+                }
 
 //------------------------------------------
 //HTML Section
@@ -94,14 +106,21 @@ void loop(){
             client.println("<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}");
             client.println(".button { background-color: #4CAF50; border: none; color: white; padding: 16px 40px;");
             client.println("text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}");
-            client.println(".button2 {background-color: #555555;}</style></head>");
+            client.println(".button2 {background-color: #555555;}body{background-color:#0000;}</style></head>");
 //</head> 
 //----------------------------------------------------------------------------------
             client.println("<body><h1>ESP32 Web Server</h1>");
 //<body>  | HTML Functions Here        
-            Adelante_HTML();
-
-
+     
+        // Display current state, and ON/OFF buttons for GPIO 26  
+            client.println("<p>GPIO 26 - State " + forwardStatus + "</p>");
+            // If the forwardStatus is off, it displays the ON button       
+            if (forwardStatus=="off") {
+              client.println("<p><a href=\"/26/on\"><button class=\"button\">ON</button></a></p>");
+            } else {
+              client.println("<p><a href=\"/26/off\"><button class=\"button button2\">OFF</button></a></p>");
+            } 
+         
 
 
 //--------            
