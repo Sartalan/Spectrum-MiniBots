@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controller</title>
+
+    <style>
+        :root {
+    --pads-color:#000000;
+}
+
+:root {
+    --left-radius:1em 0 0 1em;
+    --right-radius:0 1em 1em 0;
+    --bottom-radius:0 0 1em 1em;
+    --top-radius:1em 1em 0 0;
+}
+
+.top {
+    grid-column: 2;
+    grid-row:1;
+    border-radius: var(--top-radius);
+}
+
+.bottom {
+    grid-column: 2;
+    grid-row: 3;
+    border-radius: var(--bottom-radius);
+}
+.right {
+    grid-column: 3;
+    grid-row: 2;
+    border-radius: var(--right-radius);
+}
+
+.left {
+    grid-column: 1;
+    grid-row: 2;
+    border-radius: var(--left-radius);
+}
+
+/*? Final de Grilla*/
+/*! ------------------------------------- */
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #181717;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.controller-box {
+    width: 20em;
+    height: 20em;
+    background-color:transparent;
+    display: grid;
+    position: relative;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+}
+
+/*! Center controller btn*/
+.center {
+    background-color: var(--pads-color);
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.center-icon {
+    width: 3em;
+    height: 3em;
+    
+}
+
+/*!Exterior btns style*/
+
+.controller-btn {
+    background-color: var(--pads-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.controller-btn > .arrow-in {
+    width: 6em;
+    height: 6em;
+    filter: invert(1);
+}
+
+/*? Button Functionality*/
+
+.controller-btn.active {
+    background-color: rgba(46, 138, 126, 0.733);
+}
+
+    </style>
+
+</head>
+<body>
+
+ 
+
+    <div class="controller-box">
+
+        <div class="center"></div>
+
+        <div class="left controller-btn"><img class="arrow-in" src="controller_icons/left.svg" alt=""></div>
+        <div class="right controller-btn"><img class="arrow-in" src="controller_icons/right.svg" alt=""></div>
+        <div class="bottom controller-btn"><img class="arrow-in" src="controller_icons/bottom.svg" alt=""></div>
+        <div class="top controller-btn"><img class="arrow-in" src="controller_icons/top.svg" alt=""></div>
+
+    </div>
+  
+
+    <script>
+        
+
+        let izquierda = document.querySelector('.left')
+            let derecha = document.querySelector('.right')
+            let abajo = document.querySelector('.bottom')
+            let arriba = document.querySelector('.top')
+            let i = 1
+
+        window.addEventListener("keydown", function (event) {
+            
+            let letra = (event.code)
+             
+            
+            switch (letra) {
+                default:
+                izquierda.classList.remove('active')
+                derecha.classList.remove('active')
+                abajo.classList.remove('active')
+                arriba.classList.remove('active')
+                break;
+                
+            //!--------------IZQUIERDA---------------
+                case 'KeyA':
+                console.log('Presionaste A y soy el boton de la izquierda =D')
+                izquierda.classList.add('active')
+                break;
+                
+            
+
+            //!--------------DERECHA---------------
+
+                case 'KeyD':
+                console.log('Presionaste D y soy el boton de la derecha =D')
+                derecha.classList.add('active')
+                break;
+                
+            
+
+            //!--------------ABAJO---------------
+
+            
+                case 'KeyS':
+                console.log('Presionaste S y soy el boton de abajo =D')
+                abajo.classList.add('active')
+                break;
+                
+            
+
+            //!--------------ARRIBA---------------
+
+                case 'KeyW':
+                console.log('Presionaste W y soy el boton de arriba =D')
+                arriba.classList.add('active')
+                break;
+
+                
+            }
+        
+        })
+        window.addEventListener("keyup", function (event) {
+            let letra = (event.code)
+            switch (letra) {
+            //!--------------MENOSIZQUIERDA---------------
+                case 'KeyA':
+                console.log('Dejó de presionarse A y soy el boton de la izquierda =D')
+                izquierda.classList.remove('active')
+                break;
+                
+            
+
+            //!--------------MENOSDERECHA---------------
+
+                case 'KeyD':
+                console.log('Dejo de presionarse D y soy el boton de la derecha =D')
+                derecha.classList.remove('active')
+                break;
+                
+            
+
+            //!--------------MENOSABAJO---------------
+
+            
+                case 'KeyS':
+                console.log('Dejo de presionarse S y soy el boton de abajo =D')
+                abajo.classList.remove('active')
+                break;
+                
+            
+
+            //!--------------MENOSARRIBA---------------
+
+                case 'KeyW':
+                console.log('Dejo de presionarse W y soy el boton de arriba =D')
+                arriba.classList.remove('active')
+                break;
+
+                
+            }
+
+        })
+
+
+    </script>
+</body>
+</html>  

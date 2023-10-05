@@ -1,11 +1,12 @@
-/*********
-  Rui Santos
-  Complete project details at https://RandomNerdTutorials.com/esp32-websocket-server-arduino/
-  The above copyright notice and this permission notice shall be included in all
-  copies or substantial portions of the Software.
-*********/
+//TODO: Todo lo que se encuentre dentro de este tipo de comentario
+//TODO: Es contenido que no se debe de tocar y es default del protocolo WebSocket
+//----
+//? 
 
-// Import required libraries
+
+
+//TODO: // DON'T REMOVE ANYTHING -----------DEFAULT-----------------
+
 #include <WiFi.h>
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
@@ -20,6 +21,8 @@ const int ledPin = 2;
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
+
+//TODO: // DON'T REMOVE ANYTHING -----------DEFAULT-----------------
 
 const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE HTML><html>
@@ -146,6 +149,8 @@ const char index_html[] PROGMEM = R"rawliteral(
 </html>
 )rawliteral";
 
+//TODO: // DON'T REMOVE ANYTHING -----------DEFAULT-----------------
+
 void notifyClients() {
   ws.textAll(String(ledState));
 }
@@ -183,6 +188,8 @@ void initWebSocket() {
   ws.onEvent(onEvent);
   server.addHandler(&ws);
 }
+
+//TODO: // DON'T REMOVE ANYTHING -----------DEFAULT-----------------
 
 String processor(const String& var){
   Serial.println(var);
