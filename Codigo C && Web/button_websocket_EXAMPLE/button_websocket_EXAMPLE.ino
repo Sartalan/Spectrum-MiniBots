@@ -1,28 +1,29 @@
-//TODO: Todo lo que se encuentre dentro de este tipo de comentario
-//TODO: Es contenido que no se debe de tocar y es default del protocolo WebSocket
-//----
-//? 
+/*********
+  Rui Santos
+  Complete project details at https://RandomNerdTutorials.com/esp32-websocket-server-arduino/
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+*********/
 
-
-
-//TODO: // DON'T REMOVE ANYTHING -----------DEFAULT-----------------
-
+// Import required libraries
 #include <WiFi.h>
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 
 // Replace with your network credentials
-const char* ssid = "Estudiantes";
-const char* password = "educar_2018";
+const char* ssid = "TP-LINK_3C90";
+const char* password = "yBxwCV3AryoFqJ8RHfYU";
 
-bool ledState = 0;
-const int ledPin = 2;
+const int ledPin = 23;
+const int ledPinDos = 22;
+const int ledPinTres = 18;
+const int ledPinCuatro = 19;
+
+bool ledState,ledStateDos,ledStateTres,ledStateCuatro = 0;
 
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
-
-//TODO: // DON'T REMOVE ANYTHING -----------DEFAULT-----------------
 
 const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE HTML><html>
@@ -30,23 +31,15 @@ const char index_html[] PROGMEM = R"rawliteral(
   <title>ESP Web Server</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="data:,">
-  <style>
+<style>
   html {
     font-family: Arial, Helvetica, sans-serif;
     text-align: center;
-  }
-  h1 {
-    font-size: 1.8rem;
-    color: white;
   }
   h2{
     font-size: 1.5rem;
     font-weight: bold;
     color: #143642;
-  }
-  .topnav {
-    overflow: hidden;
-    background-color: #143642;
   }
   body {
     margin: 0;
@@ -96,14 +89,13 @@ const char index_html[] PROGMEM = R"rawliteral(
 <link rel="icon" href="data:,">
 </head>
 <body>
-  <div class="topnav">
-    <h1>ESP WebSocket Server</h1>
-  </div>
   <div class="content">
     <div class="card">
-      <h2>Output - GPIO 2</h2>
+      <h2>Prueba GPIO 2</h2>
+
       <p class="state">state: <span id="state">%STATE%</span></p>
       <p><button id="button" class="button">Toggle</button></p>
+      
     </div>
   </div>
 <script>
@@ -124,6 +116,7 @@ const char index_html[] PROGMEM = R"rawliteral(
     console.log('Connection closed');
     setTimeout(initWebSocket, 2000);
   }
+
   function onMessage(event) {
     var state;
     if (event.data == "1"){
@@ -139,17 +132,106 @@ const char index_html[] PROGMEM = R"rawliteral(
     initButton();
   }
   function initButton() {
-    document.getElementById('button').addEventListener('click', toggle);
+         window.addEventListener("keydown", function (event) {
+            
+            let letra = (event.code)
+
+             
+            
+            switch (letra) {
+                default:
+
+                break;
+                
+            //!--------------IZQUIERDA---------------
+                case 'KeyA':
+                console.log('Presionaste A y soy el boton de la izquierda =D')
+                websocket.send('IZQUIERDA');
+                break;
+
+            //!--------------DERECHA---------------
+
+                case 'KeyD':
+                console.log('Presionaste D y soy el boton de la derecha =D')         
+                websocket.send('DERECHA'); 
+                break;
+
+            //!--------------ABAJO---------------
+           
+                case 'KeyS':
+                console.log('Presionaste S y soy el boton de abajo =D') 
+                websocket.send('ABAJO');         
+                break;           
+
+            //!--------------ARRIBA---------------
+
+                case 'KeyW':
+                console.log('Presionaste W y soy el boton de arriba =D')    
+                websocket.send('ARRIBA');   
+                break;    
+
+            }
+        
+        })
+        window.addEventListener("keyup", function (event) {
+            let letra = (event.code)
+            switch (letra) {
+            //!--------------MENOSIZQUIERDA---------------
+                case 'KeyA':
+                console.log('Dejó de presionarse A y soy el boton de la izquierda =D')
+     
+                break;
+                
+            
+
+            //!--------------MENOSDERECHA---------------
+
+                case 'KeyD':
+                console.log('Dejo de presionarse D y soy el boton de la derecha =D')
+           
+                break;
+                
+            
+
+            //!--------------MENOSABAJO---------------
+
+            
+                case 'KeyS':
+                console.log('Dejo de presionarse S y soy el boton de abajo =D')
+
+                break;
+                
+            
+
+            //!--------------MENOSARRIBA---------------
+
+                case 'KeyW':
+                console.log('Dejo de presionarse W y soy el boton de arriba =D')
+       
+                break;
+
+                
+            }
+
+        })
+
   }
+
+
+
+
+
+
   function toggle(){
-    websocket.send('toggle');
+
+
+    websocket.send('alan');
+
   }
 </script>
 </body>
 </html>
 )rawliteral";
-
-//TODO: // DON'T REMOVE ANYTHING -----------DEFAULT-----------------
 
 void notifyClients() {
   ws.textAll(String(ledState));
@@ -159,8 +241,20 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
   AwsFrameInfo *info = (AwsFrameInfo*)arg;
   if (info->final && info->index == 0 && info->len == len && info->opcode == WS_TEXT) {
     data[len] = 0;
-    if (strcmp((char*)data, "toggle") == 0) {
+    if (strcmp((char*)data, "IZQUIERDA") == 0) {
       ledState = !ledState;
+      notifyClients();
+    }
+    if (strcmp((char*)data, "DERECHA") == 0) {
+      ledStateDos = !ledStateDos;
+      notifyClients();
+    }
+       if (strcmp((char*)data, "ARRIBA") == 0) {
+      ledStateTres = !ledStateTres;
+      notifyClients();
+    }
+       if (strcmp((char*)data, "ABAJO") == 0) {
+      ledStateCuatro = !ledStateCuatro;
       notifyClients();
     }
   }
@@ -189,8 +283,6 @@ void initWebSocket() {
   server.addHandler(&ws);
 }
 
-//TODO: // DON'T REMOVE ANYTHING -----------DEFAULT-----------------
-
 String processor(const String& var){
   Serial.println(var);
   if(var == "STATE"){
@@ -209,7 +301,14 @@ void setup(){
   Serial.begin(115200);
 
   pinMode(ledPin, OUTPUT);
+  pinMode(ledPinDos, OUTPUT);
+  pinMode(ledPinTres, OUTPUT);
+  pinMode(ledPinCuatro, OUTPUT);
+
   digitalWrite(ledPin, LOW);
+  digitalWrite(ledPinDos, LOW);
+  digitalWrite(ledPinTres, LOW);
+  digitalWrite(ledPinCuatro, LOW);
   
   // Connect to Wi-Fi
   WiFi.begin(ssid, password);
@@ -235,4 +334,7 @@ void setup(){
 void loop() {
   ws.cleanupClients();
   digitalWrite(ledPin, ledState);
+  digitalWrite(ledPinDos, ledStateDos);
+  digitalWrite(ledPinTres, ledStateTres);
+  digitalWrite(ledPinCuatro, ledStateCuatro);
 }
