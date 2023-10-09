@@ -32,72 +32,135 @@ const char index_html[] PROGMEM = R"rawliteral(
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="data:,">
 <style>
-  html {
-    font-family: Arial, Helvetica, sans-serif;
-    text-align: center;
-  }
-  h2{
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #143642;
-  }
-  body {
+        :root {
+    --pads-color:#000000;
+}
+
+:root {
+    --left-radius:1em 0 0 1em;
+    --right-radius:0 1em 1em 0;
+    --bottom-radius:0 0 1em 1em;
+    --top-radius:1em 1em 0 0;
+}
+
+.top {
+    grid-column: 2;
+    grid-row:1;
+    border-radius: var(--top-radius);
+}
+
+.bottom {
+    grid-column: 2;
+    grid-row: 3;
+    border-radius: var(--bottom-radius);
+}
+.right {
+    grid-column: 3;
+    grid-row: 2;
+    border-radius: var(--right-radius);
+}
+
+.left {
+    grid-column: 1;
+    grid-row: 2;
+    border-radius: var(--left-radius);
+}
+
+/*? Final de Grilla*/
+/*! ------------------------------------- */
+
+* {
+    padding: 0;
     margin: 0;
-  }
-  .content {
-    padding: 30px;
-    max-width: 600px;
-    margin: 0 auto;
-  }
-  .card {
-    background-color: #F8F7F9;;
-    box-shadow: 2px 2px 12px 1px rgba(140,140,140,.5);
-    padding-top:10px;
-    padding-bottom:20px;
-  }
-  .button {
-    padding: 15px 50px;
-    font-size: 24px;
-    text-align: center;
-    outline: none;
-    color: #fff;
-    background-color: #0f8b8d;
-    border: none;
-    border-radius: 5px;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
-   }
-   /*.button:hover {background-color: #0f8b8d}*/
-   .button:active {
-     background-color: #0f8b8d;
-     box-shadow: 2 2px #CDCDCD;
-     transform: translateY(2px);
-   }
-   .state {
-     font-size: 1.5rem;
-     color:#8c8c8c;
-     font-weight: bold;
-   }
-  </style>
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #181717;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.controller-box {
+    width: 20em;
+    height: 20em;
+    background-color:transparent;
+    display: grid;
+    position: relative;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+}
+
+/*! Center controller btn*/
+.center {
+    background-color: var(--pads-color);
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.center-icon {
+    width: 3em;
+    height: 3em;
+    
+}
+
+/*!Exterior btns style*/
+
+.controller-btn {
+    background-color: var(--pads-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.controller-btn > .arrow-in {
+    width: 6em;
+    height: 6em;
+    filter: invert(1);
+}
+
+/*? Button Functionality*/
+
+.controller-btn.active {
+    background-color: rgba(46, 138, 126, 0.733);
+}
+
+    </style>
+
+
 <title>ESP Web Server</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:,">
 </head>
 <body>
-  <div class="content">
-    <div class="card">
-      <h2>Prueba GPIO 2</h2>
+  <div class="controller-box">
 
-      <p class="state">state: <span id="state">%STATE%</span></p>
-      <p><button id="button" class="button">Toggle</button></p>
-      
+        <div class="center"></div>
+
+        <div class="left controller-btn">
+          <img class="arrow-in" src="#" alt="">
+        </div>
+
+        <div class="right controller-btn">
+          <img class="arrow-in" src="#" alt="">
+        </div>
+
+        <div class="bottom controller-btn">
+          <img class="arrow-in" src="#" alt="">
+        </div>
+
+        <div class="top controller-btn">
+          <img class="arrow-in" src="#" alt="">
+        </div>
+
     </div>
-  </div>
+  
 <script>
   var gateway = `ws://${window.location.hostname}/ws`;
   var websocket;
@@ -127,11 +190,20 @@ const char index_html[] PROGMEM = R"rawliteral(
     }
     document.getElementById('state').innerHTML = state;
   }
+
   function onLoad(event) {
     initWebSocket();
     initButton();
   }
+   
   function initButton() {
+
+            let izquierda = document.querySelector('.left')
+            let derecha = document.querySelector('.right')
+            let abajo = document.querySelector('.bottom')
+            let arriba = document.querySelector('.top')
+            let i = 1
+            
          window.addEventListener("keydown", function (event) {
             
             let letra = (event.code)
@@ -141,18 +213,25 @@ const char index_html[] PROGMEM = R"rawliteral(
             switch (letra) {
                 default:
 
+                izquierda.classList.remove('active')
+                derecha.classList.remove('active')
+                abajo.classList.remove('active')
+                arriba.classList.remove('active')
+
                 break;
                 
             //!--------------IZQUIERDA---------------
                 case 'KeyA':
                 console.log('Presionaste A y soy el boton de la izquierda =D')
+                izquierda.classList.add('active')
                 websocket.send('IZQUIERDA');
                 break;
 
             //!--------------DERECHA---------------
 
                 case 'KeyD':
-                console.log('Presionaste D y soy el boton de la derecha =D')         
+                console.log('Presionaste D y soy el boton de la derecha =D')     
+                derecha.classList.add('active')    
                 websocket.send('DERECHA'); 
                 break;
 
@@ -161,12 +240,14 @@ const char index_html[] PROGMEM = R"rawliteral(
                 case 'KeyS':
                 console.log('Presionaste S y soy el boton de abajo =D') 
                 websocket.send('ABAJO');         
+                abajo.classList.add('active')
                 break;           
 
             //!--------------ARRIBA---------------
 
                 case 'KeyW':
                 console.log('Presionaste W y soy el boton de arriba =D')    
+                arriba.classList.add('active')
                 websocket.send('ARRIBA');   
                 break;    
 
@@ -179,7 +260,7 @@ const char index_html[] PROGMEM = R"rawliteral(
             //!--------------MENOSIZQUIERDA---------------
                 case 'KeyA':
                 console.log('Dejó de presionarse A y soy el boton de la izquierda =D')
-     
+                izquierda.classList.remove('active')
                 break;
                 
             
@@ -188,7 +269,7 @@ const char index_html[] PROGMEM = R"rawliteral(
 
                 case 'KeyD':
                 console.log('Dejo de presionarse D y soy el boton de la derecha =D')
-           
+                derecha.classList.remove('active')
                 break;
                 
             
@@ -198,7 +279,7 @@ const char index_html[] PROGMEM = R"rawliteral(
             
                 case 'KeyS':
                 console.log('Dejo de presionarse S y soy el boton de abajo =D')
-
+                abajo.classList.remove('active')
                 break;
                 
             
@@ -207,7 +288,7 @@ const char index_html[] PROGMEM = R"rawliteral(
 
                 case 'KeyW':
                 console.log('Dejo de presionarse W y soy el boton de arriba =D')
-       
+                arriba.classList.remove('active')
                 break;
 
                 
