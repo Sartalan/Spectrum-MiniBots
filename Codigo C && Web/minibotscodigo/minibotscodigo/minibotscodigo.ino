@@ -5,8 +5,8 @@
 #include <ESPAsyncWebServer.h>
 
 // Replace with your network credentials
-const char* ssid = "Estudiantes";
-const char* password = "educar_2018";
+const char* ssid = "Vllamada";
+const char* password = "Vllamada_2021";
 
 const int ledPin = 23;
 const int ledPinDos = 22;
@@ -167,7 +167,7 @@ body {
     websocket = new WebSocket(gateway);
     websocket.onopen    = onOpen;
     websocket.onclose   = onClose;
-    websocket.onmessage = onMessage; // <-- add this line
+   
   }
   function onOpen(event) {
     console.log('Connection opened');
@@ -178,7 +178,14 @@ body {
   }
 
   function onMessage(event) {
-  
+    var state;
+    if (event.data == "1"){
+      state = "ON";
+    }
+    else{
+      state = "OFF";
+    }
+    document.getElementById('state').innerHTML = state;
   }
 
   function onLoad(event) {
@@ -188,16 +195,15 @@ body {
   
   //Controller Functionality Start
 // ------------------------------------- 
-  
+
   function initButton() {
 
   let izquierda = document.querySelector('.left')
   let derecha = document.querySelector('.right')
   let abajo = document.querySelector('.bottom')
   let arriba = document.querySelector('.top')
-
   let Estado = 0
-  
+  let senalEnviada = 0 
       window.addEventListener("keydown", function (event) {
             
             let letra = (event.code)
@@ -215,39 +221,53 @@ body {
             //!--------------IZQUIERDA---------------
 
           case 'KeyA':
+          Estado=1;
+          
+          if(Estado && !senalEnviada){
           console.log('Presionaste A y soy el boton de la izquierda =D')
           izquierda.classList.add('active')
-
-          websocket.send('IZQUIERDA'); 
+          websocket.send('IZQUIERDA');
+          senalEnviada=1;
+          }
 
         break;
 
             //!--------------DERECHA---------------
 
           case 'KeyD':
+          Estado=1;
+          if(Estado && !senalEnviada){
           console.log('Presionaste D y soy el boton de la derecha =D')     
           derecha.classList.add('active')    
-          websocket.send('DERECHA'); 
-          
+          websocket.send('DERECHA');
+          senalEnviada=1;
+          }
+
         break;
 
             //!--------------ABAJO---------------
            
           case 'KeyS':
+          Estado=1;
+          if(Estado && !senalEnviada){
           console.log('Presionaste S y soy el boton de abajo =D') 
           websocket.send('ABAJO');         
           abajo.classList.add('active')
-          
+          senalEnviada=1;
+          }
+
         break;           
 
             //!--------------ARRIBA---------------
 
           case 'KeyW':
+          Estado=1;
+          if(Estado && !senalEnviada){
           console.log('Presionaste W y soy el boton de arriba =D')    
           arriba.classList.add('active')
-
-          websocket.send('ARRIBA'); 
-          
+          websocket.send('ARRIBA');
+          senalEnviada=1;
+          }
         break;    
 }})
 
@@ -269,8 +289,8 @@ body {
 
             console.log('Dejó de presionarse A y soy el boton de la izquierda =D')
             izquierda.classList.remove('active')
-            websocket.send('MENOSIZQUIERDA'); 
-           
+            Estado=0
+            senalEnviada=0
 
         break;
                 
@@ -280,6 +300,7 @@ body {
 
             console.log('Dejo de presionarse D y soy el boton de la derecha =D')
             derecha.classList.remove('active')
+            senalEnviada=0
 
         break;
                 
@@ -289,6 +310,7 @@ body {
 
               console.log('Dejo de presionarse S y soy el boton de abajo =D')
               abajo.classList.remove('active')
+              senalEnviada=0
 
           break;
                 
@@ -298,6 +320,7 @@ body {
 
               console.log('Dejo de presionarse W y soy el boton de arriba =D')
               arriba.classList.remove('active')
+              senalEnviada=0
 
           break;               
             }
@@ -305,6 +328,11 @@ body {
         })
 
   }
+
+
+
+
+
 
   function toggle(){
 
@@ -325,25 +353,22 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
   AwsFrameInfo *info = (AwsFrameInfo*)arg;
   if (info->final && info->index == 0 && info->len == len && info->opcode == WS_TEXT) {
     data[len] = 0;
-
     if (strcmp((char*)data, "IZQUIERDA") == 0) {
       ledState = !ledState;
       notifyClients();
     }
-
     if (strcmp((char*)data, "DERECHA") == 0) {
       ledStateDos = !ledStateDos;
       notifyClients();
     }
-    if (strcmp((char*)data, "ARRIBA") == 0) {
+       if (strcmp((char*)data, "ARRIBA") == 0) {
       ledStateTres = !ledStateTres;
       notifyClients();
     }
-    if (strcmp((char*)data, "ABAJO") == 0) {
+       if (strcmp((char*)data, "ABAJO") == 0) {
       ledStateCuatro = !ledStateCuatro;
       notifyClients();
     }
-    
   }
 }
 
@@ -376,7 +401,7 @@ String processor(const String& var){
     if (ledState){
       return "ON";
     }
-    else {
+    else{
       return "OFF";
     }
   }
@@ -420,7 +445,6 @@ void setup(){
 
 void loop() {
   ws.cleanupClients();
-
   digitalWrite(ledPin, ledState);
   digitalWrite(ledPinDos, ledStateDos);
   digitalWrite(ledPinTres, ledStateTres);

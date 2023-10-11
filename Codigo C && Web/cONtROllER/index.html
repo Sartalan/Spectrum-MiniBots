@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE HTML><html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controller</title>
+  <title>ESP Web Server</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
 
-    <style>
+<style>
         :root {
     --pads-color:#000000;
 }
@@ -16,13 +15,13 @@
     --bottom-radius:0 0 1em 1em;
     --top-radius:1em 1em 0 0;
 }
-
+/*GRID POSITION*/
+/*! ------------------------------------- */
 .top {
     grid-column: 2;
     grid-row:1;
     border-radius: var(--top-radius);
 }
-
 .bottom {
     grid-column: 2;
     grid-row: 3;
@@ -33,14 +32,13 @@
     grid-row: 2;
     border-radius: var(--right-radius);
 }
-
 .left {
     grid-column: 1;
     grid-row: 2;
     border-radius: var(--left-radius);
 }
 
-/*? Final de Grilla*/
+/*Styles Customization*/
 /*! ------------------------------------- */
 
 * {
@@ -68,6 +66,7 @@ body {
 }
 
 /*! Center controller btn*/
+/*! ------------- */
 .center {
     background-color: var(--pads-color);
     grid-column: 2;
@@ -83,7 +82,8 @@ body {
     
 }
 
-/*!Exterior btns style*/
+/*!Buttons*/
+/*! ------------- */
 
 .controller-btn {
     background-color: var(--pads-color);
@@ -100,137 +100,187 @@ body {
 }
 
 /*? Button Functionality*/
+/*! ------------------------------------- */
 
 .controller-btn.active {
     background-color: rgba(46, 138, 126, 0.733);
 }
 
-    </style>
+</style>
 
+
+<title>ESP Web Server</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
 </head>
 <body>
-
- 
-
-    <div class="controller-box">
+  <div class="controller-box">
 
         <div class="center"></div>
 
-        <div class="left controller-btn"><img class="arrow-in" src="controller_icons/left.svg" alt=""></div>
-        <div class="right controller-btn">
-            <svg class="arrow-in w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 10 16">
-                <path d="M3.414 1A2 2 0 0 0 0 2.414v11.172A2 2 0 0 0 3.414 15L9 9.414a2 2 0 0 0 0-2.828L3.414 1Z"/>
-              </svg>
+        <div class="left controller-btn">
+          <img class="arrow-in" src="controller_icons/left.svg" alt="">
         </div>
-        <div class="bottom controller-btn"><img class="arrow-in" src="controller_icons/bottom.svg" alt=""></div>
-        <div class="top controller-btn"><img class="arrow-in" src="controller_icons/top.svg" alt=""></div>
+
+        <div class="right controller-btn">
+          <img class="arrow-in" src="controller_icons/right.svg" alt="">
+        </div>
+
+        <div class="bottom controller-btn">
+          <img class="arrow-in" src="controller_icons/bottom.svg" alt="">
+        </div>
+
+        <div class="top controller-btn">
+          <img class="arrow-in" src="controller_icons/top.svg" alt="">
+        </div>
 
     </div>
   
+<script>
+  var gateway = `ws://${window.location.hostname}/ws`;
+  var websocket;
+  window.addEventListener('load', onLoad);
+  function initWebSocket() {
+    console.log('Trying to open a WebSocket connection...');
+    websocket = new WebSocket(gateway);
+    websocket.onopen    = onOpen;
+    websocket.onclose   = onClose;
+  }
+  function onOpen(event) {
+    console.log('Connection opened');
+  }
+  function onClose(event) {
+    console.log('Connection closed');
+    setTimeout(initWebSocket, 1000000);
+  }
 
-    <script>
-        
 
-        let izquierda = document.querySelector('.left')
-            let derecha = document.querySelector('.right')
-            let abajo = document.querySelector('.bottom')
-            let arriba = document.querySelector('.top')
-            let i = 1
 
-        window.addEventListener("keydown", function (event) {
+  function onLoad(event) {
+    initWebSocket();
+    initButton();
+  }
+  
+  //Controller Functionality Start
+// ------------------------------------- 
+  
+  function initButton() {
+
+  let izquierda = document.querySelector('.left')
+  let derecha = document.querySelector('.right')
+  let abajo = document.querySelector('.bottom')
+  let arriba = document.querySelector('.top')
+
+  let Estado = 0
+  
+      window.addEventListener("keydown", function (event) {
             
             let letra = (event.code)
-             
-            
-            switch (letra) {
-                default:
-                izquierda.classList.remove('active')
-                derecha.classList.remove('active')
-                abajo.classList.remove('active')
-                arriba.classList.remove('active')
-                break;
+  
+      switch (letra) {
+        default:
+
+          izquierda.classList.remove('active')
+          derecha.classList.remove('active')
+          abajo.classList.remove('active')
+          arriba.classList.remove('active')
+
+        break;
                 
             //!--------------IZQUIERDA---------------
-                case 'KeyA':
-                console.log('Presionaste A y soy el boton de la izquierda =D')
-                izquierda.classList.add('active')
-                break;
-                
-            
+
+          case 'KeyA':
+          console.log('Presionaste A y soy el boton de la izquierda =D')
+          izquierda.classList.add('active')
+
+          websocket.send('IZQUIERDA'); 
+
+        break;
 
             //!--------------DERECHA---------------
 
-                case 'KeyD':
-                console.log('Presionaste D y soy el boton de la derecha =D')
-                derecha.classList.add('active')
-                break;
-                
-            
+          case 'KeyD':
+          console.log('Presionaste D y soy el boton de la derecha =D')     
+          derecha.classList.add('active')    
+          websocket.send('DERECHA'); 
+          
+        break;
 
             //!--------------ABAJO---------------
-
-            
-                case 'KeyS':
-                console.log('Presionaste S y soy el boton de abajo =D')
-                abajo.classList.add('active')
-                break;
-                
-            
+           
+          case 'KeyS':
+          console.log('Presionaste S y soy el boton de abajo =D') 
+          websocket.send('ABAJO');         
+          abajo.classList.add('active');
+          
+        break;           
 
             //!--------------ARRIBA---------------
 
-                case 'KeyW':
-                console.log('Presionaste W y soy el boton de arriba =D')
-                arriba.classList.add('active')
-                break;
+          case 'KeyW':
+          console.log('Presionaste W y soy el boton de arriba =D')    
+          arriba.classList.add('active')
 
-                
-            }
-        
-        })
-        window.addEventListener("keyup", function (event) {
-            let letra = (event.code)
-            switch (letra) {
-            //!--------------MENOSIZQUIERDA---------------
-                case 'KeyA':
-                console.log('Dejó de presionarse A y soy el boton de la izquierda =D')
-                izquierda.classList.remove('active')
-                break;
-                
-            
+          websocket.send('ARRIBA'); 
+          
+        break;    
+}})
 
+//SÍ TOCA LA TECLA        ↑ <=
+  //-------------------------------
+//SÍ SUELTA LA TECLA      => ↓
+
+
+      window.addEventListener("keyup", function (event) {
+
+          let letra = (event.code)
+
+      switch (letra) {
+
+
+            //!--------------MENOS_IZQUIERDA---------------
+
+          case 'KeyA':
+
+            console.log('Dejó de presionarse A y soy el boton de la izquierda =D')
+            izquierda.classList.remove('active')
+            websocket.send('MENOSIZQUIERDA'); 
+           
+
+        break;
+                
             //!--------------MENOSDERECHA---------------
 
-                case 'KeyD':
-                console.log('Dejo de presionarse D y soy el boton de la derecha =D')
-                derecha.classList.remove('active')
-                break;
-                
-            
+          case 'KeyD':
 
+            console.log('Dejo de presionarse D y soy el boton de la derecha =D')
+            derecha.classList.remove('active')
+
+        break;
+                
             //!--------------MENOSABAJO---------------
+        
+            case 'KeyS':
 
-            
-                case 'KeyS':
-                console.log('Dejo de presionarse S y soy el boton de abajo =D')
-                abajo.classList.remove('active')
-                break;
+              console.log('Dejo de presionarse S y soy el boton de abajo =D')
+              abajo.classList.remove('active')
+
+          break;
                 
-            
-
             //!--------------MENOSARRIBA---------------
 
-                case 'KeyW':
-                console.log('Dejo de presionarse W y soy el boton de arriba =D')
-                arriba.classList.remove('active')
-                break;
+            case 'KeyW':
 
-                
+              console.log('Dejo de presionarse W y soy el boton de arriba =D')
+              arriba.classList.remove('active')
+
+          break;               
             }
 
         })
 
+  }
 
-    </script>
+</script>
 </body>
-</html>  
+</html>
