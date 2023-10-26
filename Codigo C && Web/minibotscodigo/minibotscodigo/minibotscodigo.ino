@@ -15,8 +15,7 @@ const char* password = "Vllamada_2021";
 #define Motor2a 18
 #define Motor2b 19
 
-bool Arriba_BOOL, Derecha_BOOL, Abajo_BOOL, MenosIzquierda , ledState = 0;
-char Izquierda_CHAR;
+bool Arriba_BOOL, Derecha_BOOL, Abajo_BOOL, MenosIzquierda , ledState, Izquierda_BOOL = 0;
 
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
@@ -356,10 +355,10 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
 //----------------
 
        if (strcmp((char*)data, "IZQUIERDA") == 0) {
-      Izquierda_CHAR  = 'A' ;
+      Izquierda_BOOL  = true ;
       MenosIzquierda = false ;
       Serial.println("Soy true IZQUIERDA");
-      Serial.println(Izquierda_CHAR);
+      Serial.println(Izquierda_BOOL);
       Serial.println(MenosIzquierda);
       Serial.println("---------------------");
       notifyClients();
@@ -367,9 +366,9 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
 
        if (strcmp((char*)data, "MENOSIZQUIERDA") == 0) {
       MenosIzquierda = true ;
-      Izquierda_CHAR = 'N' ;
+      Izquierda_BOOL = false ;
       Serial.println(MenosIzquierda);
-      Serial.println(Izquierda_CHAR);
+      Serial.println(Izquierda_BOOL);
       Serial.println("---------------------");
       notifyClients();
     }
@@ -452,13 +451,13 @@ void loop() {
   ws.cleanupClients();
 
   if(MenosIzquierda == true){
-    Izquierda_CHAR = 'N';
+    Izquierda_BOOL = false;
   }
 
-  switch (Izquierda_CHAR)
+  switch (Izquierda_BOOL)
 {
 
-    case 'A':
+    case true:
         digitalWrite(Motor1a, LOW);
         digitalWrite(Motor1b, HIGH);
         digitalWrite(Motor2a, HIGH);
