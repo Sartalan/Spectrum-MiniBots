@@ -8,12 +8,15 @@
 const char* ssid = "Vllamada";
 const char* password = "Vllamada_2021";
 
-const int ledPin = 23;
-const int ledPinDos = 22;
-const int ledPinTres = 18;
-const int ledPinCuatro = 19;
+ int Numero;
 
-bool ledState,ledStateDos,ledStateTres,ledStateCuatro = 0;
+#define Motor1a 16
+#define Motor1b 17
+#define Motor2a 18
+#define Motor2b 19
+
+bool Arriba_BOOL, Derecha_BOOL, Abajo_BOOL, MenosIzquierda , ledState = 0;
+char Izquierda_CHAR;
 
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
@@ -289,6 +292,7 @@ body {
 
             console.log('Dejó de presionarse A y soy el boton de la izquierda =D')
             izquierda.classList.remove('active')
+            websocket.send('MENOSIZQUIERDA');
             Estado=0
             senalEnviada=0
 
@@ -329,11 +333,6 @@ body {
 
   }
 
-
-
-
-
-
   function toggle(){
 
 
@@ -353,22 +352,28 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
   AwsFrameInfo *info = (AwsFrameInfo*)arg;
   if (info->final && info->index == 0 && info->len == len && info->opcode == WS_TEXT) {
     data[len] = 0;
-    if (strcmp((char*)data, "IZQUIERDA") == 0) {
-      ledState = !ledState;
+
+//----------------
+
+       if (strcmp((char*)data, "IZQUIERDA") == 0) {
+      Izquierda_CHAR  = 'A' ;
+      MenosIzquierda = false ;
+      Serial.println("Soy true IZQUIERDA");
+      Serial.println(Izquierda_CHAR);
+      Serial.println(MenosIzquierda);
+      Serial.println("---------------------");
       notifyClients();
     }
-    if (strcmp((char*)data, "DERECHA") == 0) {
-      ledStateDos = !ledStateDos;
+
+       if (strcmp((char*)data, "MENOSIZQUIERDA") == 0) {
+      MenosIzquierda = true ;
+      Izquierda_CHAR = 'N' ;
+      Serial.println(MenosIzquierda);
+      Serial.println(Izquierda_CHAR);
+      Serial.println("---------------------");
       notifyClients();
     }
-       if (strcmp((char*)data, "ARRIBA") == 0) {
-      ledStateTres = !ledStateTres;
-      notifyClients();
-    }
-       if (strcmp((char*)data, "ABAJO") == 0) {
-      ledStateCuatro = !ledStateCuatro;
-      notifyClients();
-    }
+
   }
 }
 
@@ -412,15 +417,15 @@ void setup(){
   // Serial port for debugging purposes
   Serial.begin(115200);
 
-  pinMode(ledPin, OUTPUT);
-  pinMode(ledPinDos, OUTPUT);
-  pinMode(ledPinTres, OUTPUT);
-  pinMode(ledPinCuatro, OUTPUT);
+  pinMode(Motor1a, OUTPUT);
+  pinMode(Motor1b, OUTPUT);
+  pinMode(Motor2a, OUTPUT);
+  pinMode(Motor2b, OUTPUT);
 
-  digitalWrite(ledPin, LOW);
-  digitalWrite(ledPinDos, LOW);
-  digitalWrite(ledPinTres, LOW);
-  digitalWrite(ledPinCuatro, LOW);
+  digitalWrite(Motor1a, LOW);
+  digitalWrite(Motor1b, LOW);
+  digitalWrite(Motor2a, LOW);
+  digitalWrite(Motor2b, LOW);
   
   // Connect to Wi-Fi
   WiFi.begin(ssid, password);
@@ -445,8 +450,28 @@ void setup(){
 
 void loop() {
   ws.cleanupClients();
-  digitalWrite(ledPin, ledState);
-  digitalWrite(ledPinDos, ledStateDos);
-  digitalWrite(ledPinTres, ledStateTres);
-  digitalWrite(ledPinCuatro, ledStateCuatro);
+
+  if(MenosIzquierda == true){
+    Izquierda_CHAR = 'N';
+  }
+
+  switch (Izquierda_CHAR)
+{
+
+    case 'A':
+        digitalWrite(Motor1a, LOW);
+        digitalWrite(Motor1b, HIGH);
+        digitalWrite(Motor2a, HIGH);
+        digitalWrite(Motor2b, LOW);
+        Serial.println("Voy hacia Izquierda");
+        break;
+
+    default:
+        digitalWrite(Motor1a, LOW);
+        digitalWrite(Motor1b, LOW);
+        digitalWrite(Motor2a, LOW);
+        digitalWrite(Motor2b, LOW);
+        Serial.println("Morí");
+        break;
+}
 }
