@@ -4,9 +4,10 @@
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 
+
 // Replace with your network credentials
-const char* ssid = "Vllamada";
-const char* password = "Vllamada_2021";
+const char* ssid = "Estudiantes";
+const char* password = "educar_2018";
 
  int Numero;
 
@@ -15,7 +16,8 @@ const char* password = "Vllamada_2021";
 #define Motor2a 18
 #define Motor2b 19
 
-bool Arriba_BOOL, Derecha_BOOL, Abajo_BOOL, MenosIzquierda , ledState, Izquierda_BOOL = 0;
+char move;
+int ledState = 0;
 
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
@@ -354,23 +356,29 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
 
 //----------------
 
-       if (strcmp((char*)data, "IZQUIERDA") == 0) {
-      Izquierda_BOOL  = true ;
-      MenosIzquierda = false ;
-      Serial.println("Soy true IZQUIERDA");
-      Serial.println(Izquierda_BOOL);
-      Serial.println(MenosIzquierda);
-      Serial.println("---------------------");
-      notifyClients();
+    if (strcmp((char*)data, "IZQUIERDA") == 0) {
+
+      Serial.println("Voy hacia la izquierda");
+      move = 'A';
+      
+    } if (strcmp((char*)data, "DERECHA") == 0) {
+
+       Serial.println("Voy hacia la derecha");
+      move = 'D';
+
+    }
+    if (strcmp((char*)data, "ABAJO") == 0) {
+
+      Serial.println("Voy hacia abajo");
+      move = 'S';
+       
     }
 
-       if (strcmp((char*)data, "MENOSIZQUIERDA") == 0) {
-      MenosIzquierda = true ;
-      Izquierda_BOOL = false ;
-      Serial.println(MenosIzquierda);
-      Serial.println(Izquierda_BOOL);
-      Serial.println("---------------------");
-      notifyClients();
+    if (strcmp((char*)data, "ARRIBA") == 0) {
+      
+      Serial.println("Voy hacia adelante");
+      move = 'W';
+
     }
 
   }
@@ -450,27 +458,32 @@ void setup(){
 void loop() {
   ws.cleanupClients();
 
-  if(MenosIzquierda == true){
-    Izquierda_BOOL = false;
-  }
-
-  switch (Izquierda_BOOL)
+  switch (move)
 {
 
-    case true:
-        digitalWrite(Motor1a, LOW);
-        digitalWrite(Motor1b, HIGH);
-        digitalWrite(Motor2a, HIGH);
-        digitalWrite(Motor2b, LOW);
-        Serial.println("Voy hacia Izquierda");
+  case 'A':
+
+        Serial.println("A");
+        break;
+
+  case 'D':
+
+        Serial.println("D");
+        break;
+    
+  case 'W':
+
+        Serial.println("W");
+        break;
+
+  case 'S':
+
+        Serial.println("S");
         break;
 
     default:
-        digitalWrite(Motor1a, LOW);
-        digitalWrite(Motor1b, LOW);
-        digitalWrite(Motor2a, LOW);
-        digitalWrite(Motor2b, LOW);
-        Serial.println("Morí");
+
+        Serial.println("NULL");
         break;
 }
 }
