@@ -16,8 +16,9 @@ const char* password = "educar_2018";
 #define Motor2a 18
 #define Motor2b 19
 
-char move;
+char move = 'default';
 int ledState = 0;
+bool getA, getS, getD, getW = 0;
 
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
@@ -305,6 +306,8 @@ body {
 
             console.log('Dejo de presionarse D y soy el boton de la derecha =D')
             derecha.classList.remove('active')
+            websocket.send('MENOSDERECHA');
+            Estado=0
             senalEnviada=0
 
         break;
@@ -315,6 +318,8 @@ body {
 
               console.log('Dejo de presionarse S y soy el boton de abajo =D')
               abajo.classList.remove('active')
+              websocket.send('MENOSABAJO');
+              Estado=0
               senalEnviada=0
 
           break;
@@ -325,6 +330,8 @@ body {
 
               console.log('Dejo de presionarse W y soy el boton de arriba =D')
               arriba.classList.remove('active')
+              websocket.send('MENOSARRIBA');
+              Estado=0
               senalEnviada=0
 
           break;               
@@ -360,17 +367,20 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
 
       Serial.println("Voy hacia la izquierda");
       move = 'A';
+      getA = 0;
       
     } if (strcmp((char*)data, "DERECHA") == 0) {
 
        Serial.println("Voy hacia la derecha");
       move = 'D';
+      getD = 0;
 
     }
     if (strcmp((char*)data, "ABAJO") == 0) {
 
       Serial.println("Voy hacia abajo");
       move = 'S';
+      getS = 0;
        
     }
 
@@ -378,8 +388,25 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
       
       Serial.println("Voy hacia adelante");
       move = 'W';
-
+      getA = 0;
     }
+
+    //-------------- MENOS
+
+    if (strcmp((char*)data, "MENOSARRIBA") == 0) {
+        move = 'default';
+    }
+     if (strcmp((char*)data, "MENOSDERECHA") == 0) {
+        move = 'default'; 
+    }
+     if (strcmp((char*)data, "MENOSIZQUIERDA") == 0) {
+        move = 'default';
+    }
+     if (strcmp((char*)data, "MENOSABAJO") == 0) {
+        move = 'default';
+    }
+
+    
 
   }
 }
@@ -461,24 +488,33 @@ void loop() {
   switch (move)
 {
 
-  case 'A':
 
-        Serial.println("A");
+  case 'A':
+        
+          Serial.println("A");
+        
+        
         break;
 
   case 'D':
+          
+          Serial.println("D");
+        
 
-        Serial.println("D");
         break;
-    
   case 'W':
 
-        Serial.println("W");
+        
+          Serial.println("W");
+        
+
         break;
 
   case 'S':
 
-        Serial.println("S");
+        
+          Serial.println("S");
+        
         break;
 
     default:
