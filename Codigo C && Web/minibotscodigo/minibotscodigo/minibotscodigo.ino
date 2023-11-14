@@ -11,6 +11,8 @@ const char* password = "educar_2018";
 
  int Numero;
 
+
+#define STBY 5
 #define Motor1a 16
 #define Motor1b 17
 #define Motor2a 18
@@ -106,7 +108,6 @@ body {
 .center-icon {
     width: 3em;
     height: 3em;
-    
 }
 
 /*!Buttons*/
@@ -129,10 +130,76 @@ body {
 /*? Button Functionality*/
 /*! ------------------------------------- */
 
-.controller-btn.active {
-    background-color: rgba(46, 138, 126, 0.733);
+
+.controller-btn.active
+
+ {
+    background-color: #cecdc7;
 }
 
+.controller-btn.active .arrow {
+  color: #000000;
+
+}
+
+.velocidadBtn {
+            border-radius: 3em;
+        }
+
+        .btnThree {
+            background-color: rgb(19, 225, 212);
+                grid-column: 4;
+                grid-row: 100%;
+            }
+        .btnTwo {
+          background-color: rgb(19, 225, 212);
+                grid-column: 3;
+                grid-row: 100%;
+            }
+        .btnOne {
+            background-color: rgb(19, 225, 212);
+                grid-column: 2;
+                grid-row: 100%;
+            }
+
+        .velocityNav {
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            height: 3.5em;
+
+            display: grid;
+            grid-template-columns:10px 60px 60px 60px  75%;
+            grid-template-rows: 100%;
+            grid-gap: 1em;
+        }
+
+            .arrow {
+              font-family: 'Fira Sans';
+
+              user-select: none;
+              color: white;
+              font-size: 3.5em;
+            }
+
+            .CIRCULO {
+              position: absolute;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              margin: auto;
+              height: 21em;
+              width: 21em;
+              border-radius: 10em;
+              box-shadow: -3px 6px #ffffff;
+              z-index: -5;
+              background-image: linear-gradient(top, #fcab00 0%, #ffda09 5%, #ffda09 9%, #ef9800 14%, #ef9800 20%, #fdee00 44%, #fdee00 67%, #ffb400 84%, #ffb400 100%);
+background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fcab00), color-stop(0.045, #ffda09), color-stop(0.09, #ffda09), color-stop(0.145, #ef9800), color-stop(0.2, #ef9800), color-stop(0.435, #fdee00), color-stop(0.67, #fdee00), color-stop(0.835, #ffb400), color-stop(1, #ffb400));
+background-image: -moz-linear-gradient(top, #fcab00 0%, #ffda09 5%, #ffda09 9%, #ef9800 14%, #ef9800 20%, #fdee00 44%, #fdee00 67%, #ffb400 84%, #ffb400 100%);
+background-image: -o-linear-gradient(top, #fcab00 0%, #ffda09 5%, #ffda09 9%, #ef9800 14%, #ef9800 20%, #fdee00 44%, #fdee00 67%, #ffb400 84%, #ffb400 100%);
+background-image: -ms-linear-gradient(top, #fcab00 0%, #ffda09 5%, #ffda09 9%, #ef9800 14%, #ef9800 20%, #fdee00 44%, #fdee00 67%, #ffb400 84%, #ffb400 100%);
+            }
 </style>
 
 
@@ -141,24 +208,28 @@ body {
 <link rel="icon" href="data:,">
 </head>
 <body>
+
+  <div class="CIRCULO"></div>
   <div class="controller-box">
 
         <div class="center"></div>
 
-        <div class="left controller-btn">
-          <img class="arrow-in" src="#" alt="">
+       <div class="left controller-btn">
+            <div class="arrow arrow-left">A</div>
         </div>
 
         <div class="right controller-btn">
-          <img class="arrow-in" src="#" alt="">
+          <div class="arrow arrow-right">D</div>
+
         </div>
 
         <div class="bottom controller-btn">
-          <img class="arrow-in" src="#" alt="">
+          <div class="arrow arrow-bottom">S</div>
+          
         </div>
 
         <div class="top controller-btn">
-          <img class="arrow-in" src="#" alt="">
+          <div class="arrow arrow-top">W</div>
         </div>
 
     </div>
@@ -207,6 +278,12 @@ body {
   let derecha = document.querySelector('.right')
   let abajo = document.querySelector('.bottom')
   let arriba = document.querySelector('.top')
+
+  let izquierdaFlecha = document.querySelector('.arrow-left')
+  let derechaFlecha = document.querySelector('.arrow-right')
+  let abajoFlecha = document.querySelector('.arrow-bottom')
+  let arribaFlecha = document.querySelector('.arrow-top')
+
   let Estado = 0
   let senalEnviada = 0 
       window.addEventListener("keydown", function (event) {
@@ -221,6 +298,11 @@ body {
           abajo.classList.remove('active')
           arriba.classList.remove('active')
 
+          izquierdaFlecha.classList.remove('active')
+          derechaFlecha.classList.remove('active')
+          abajoFlecha.classList.remove('active')
+          arribaFlecha.classList.remove('active')
+
         break;
                 
             //!--------------IZQUIERDA---------------
@@ -230,6 +312,7 @@ body {
           
           if(Estado && !senalEnviada){
           console.log('Presionaste A y soy el boton de la izquierda =D')
+          izquierdaFlecha.classList.add('active')
           izquierda.classList.add('active')
           websocket.send('IZQUIERDA');
           senalEnviada=1;
@@ -243,6 +326,7 @@ body {
           Estado=1;
           if(Estado && !senalEnviada){
           console.log('Presionaste D y soy el boton de la derecha =D')     
+          derechaFlecha.classList.add('active')
           derecha.classList.add('active')    
           websocket.send('DERECHA');
           senalEnviada=1;
@@ -257,6 +341,7 @@ body {
           if(Estado && !senalEnviada){
           console.log('Presionaste S y soy el boton de abajo =D') 
           websocket.send('ABAJO');         
+          abajoFlecha.classList.add('active')
           abajo.classList.add('active')
           senalEnviada=1;
           }
@@ -269,6 +354,7 @@ body {
           Estado=1;
           if(Estado && !senalEnviada){
           console.log('Presionaste W y soy el boton de arriba =D')    
+          arribaFlecha.classList.add('active')
           arriba.classList.add('active')
           websocket.send('ARRIBA');
           senalEnviada=1;
@@ -294,6 +380,7 @@ body {
 
             console.log('Dejó de presionarse A y soy el boton de la izquierda =D')
             izquierda.classList.remove('active')
+            izquierdaFlecha.classList.remove('active')
             websocket.send('MENOSIZQUIERDA');
             Estado=0
             senalEnviada=0
@@ -305,6 +392,7 @@ body {
           case 'KeyD':
 
             console.log('Dejo de presionarse D y soy el boton de la derecha =D')
+            derechaFlecha.classList.remove('active')
             derecha.classList.remove('active')
             websocket.send('MENOSDERECHA');
             Estado=0
@@ -317,6 +405,7 @@ body {
             case 'KeyS':
 
               console.log('Dejo de presionarse S y soy el boton de abajo =D')
+              abajoFlecha.classList.remove('active')
               abajo.classList.remove('active')
               websocket.send('MENOSABAJO');
               Estado=0
@@ -329,6 +418,7 @@ body {
             case 'KeyW':
 
               console.log('Dejo de presionarse W y soy el boton de arriba =D')
+              arribaFlecha.classList.remove('active')
               arriba.classList.remove('active')
               websocket.send('MENOSARRIBA');
               Estado=0
@@ -485,20 +575,29 @@ void setup(){
 void loop() {
   ws.cleanupClients();
 
-  switch (move)
+ switch (move)
 {
 
 
   case 'A':
         
           Serial.println("A");
-        
+          digitalWrite(Motor1a, HIGH);
+          digitalWrite(Motor1b, LOW);
+          digitalWrite(Motor2a, LOW);
+          digitalWrite(Motor2b, HIGH);
+          digitalWrite(STBY, HIGH);
         
         break;
 
   case 'D':
           
           Serial.println("D");
+          digitalWrite(Motor1a, LOW);
+          digitalWrite(Motor1b, HIGH);
+          digitalWrite(Motor2a, HIGH);
+          digitalWrite(Motor2b, LOW);
+          digitalWrite(STBY, HIGH);
         
 
         break;
@@ -506,7 +605,11 @@ void loop() {
 
         
           Serial.println("W");
-        
+          digitalWrite(Motor1a, HIGH);
+          digitalWrite(Motor1b, LOW);
+          digitalWrite(Motor2a, HIGH);
+          digitalWrite(Motor2b, LOW);
+          digitalWrite(STBY, HIGH);
 
         break;
 
@@ -514,12 +617,22 @@ void loop() {
 
         
           Serial.println("S");
+          digitalWrite(Motor1a, LOW);
+          digitalWrite(Motor1b, HIGH);
+          digitalWrite(Motor2a, LOW);
+          digitalWrite(Motor2b, HIGH);
+          digitalWrite(STBY, HIGH);
         
         break;
 
     default:
 
         Serial.println("NULL");
+        digitalWrite(Motor1a, LOW);
+        digitalWrite(Motor1b, LOW);
+        digitalWrite(Motor2a, LOW);
+        digitalWrite(Motor2b, LOW);
+        digitalWrite(STBY, LOW);
         break;
 }
 }
